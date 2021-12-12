@@ -1,4 +1,5 @@
 import psycopg2 as ps
+from pandas import read_excel
 from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
@@ -232,3 +233,8 @@ class DatabasePy(object):
         with self.connection.cursor() as cur:
             cur.callproc("delete_services_by_str", (id_b, id_t, id_c,))
         self.connection.commit()
+        
+        
+    def read_table(self, name_file)
+        df = read_excel(name_file)
+        return df.values.tolist()
