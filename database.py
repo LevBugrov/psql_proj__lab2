@@ -235,6 +235,6 @@ class DatabasePy(object):
         self.connection.commit()
         
         
-    def read_table(self, name_file)
+    def read_table(self, name_file):
         df = read_excel(name_file)
         return df.values.tolist()
