@@ -23,23 +23,29 @@ class MainWindow(Q.QMainWindow):
         # Add record to Types of service
         self.ui.tos.add_record_button.clicked.connect(self.add_tos)
         # Remove all records from Services
-        self.ui.services.remove_all_button.clicked.connect(self.delete_services)
+        self.ui.services.remove_all_button.clicked.connect(
+            self.delete_services)
         # Remove all records from Branches
-        self.ui.branches.remove_all_button.clicked.connect(self.delete_branches)
+        self.ui.branches.remove_all_button.clicked.connect(
+            self.delete_branches)
         # Remove all records from Customers
-        self.ui.customers.remove_all_button.clicked.connect(self.delete_customers)
+        self.ui.customers.remove_all_button.clicked.connect(
+            self.delete_customers)
         # Remove all records from Types of service
         self.ui.tos.remove_all_button.clicked.connect(self.delete_tos)
         # Remove records from all tables
         self.ui.remove_all_button.clicked.connect(self.delete_all_tables)
         # Remove customers by first name
-        self.ui.customers.remove_record.clicked.connect(self.delete_customers_by_name)
+        self.ui.customers.remove_record.clicked.connect(
+            self.delete_customers_by_name)
         # Remove branches by name
-        self.ui.branches.remove_record.clicked.connect(self.delete_branches_by_name)
+        self.ui.branches.remove_record.clicked.connect(
+            self.delete_branches_by_name)
         # Remove tos by type
         self.ui.tos.remove_record.clicked.connect(self.delete_tos_by_type)
         # Remove services by date
-        self.ui.services.remove_record.clicked.connect(self.delete_services_by_date)
+        self.ui.services.remove_record.clicked.connect(
+            self.delete_services_by_date)
 
     def delete_services_by_date(self):
         date = self.ui.services.date.edit.text()
@@ -264,6 +270,7 @@ class MainWindow(Q.QMainWindow):
                 return
             self.db.add_to_services(branch_id, type_id, customer_id, date)
             self.refresh_services_table()
+            self.refresh_customers_table()
         else:
             self.no_db_name_message()
 
@@ -309,7 +316,6 @@ class MainWindow(Q.QMainWindow):
             self.db_name = ""
             self.ui.open_db_edit.setText("")
             self.delete_all_tables()
-
 
 
 if __name__ == '__main__':
