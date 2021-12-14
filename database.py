@@ -157,22 +157,22 @@ class DatabasePy(object):
     def search_clients_by_name(self, name):
         with self.connection.cursor() as cur:
             cur.callproc("search_clients_by_name", (name,))
-        self.connection.commit()
+            return cur.fetchall()
 
     def search_branches_by_name(self, name):
         with self.connection.cursor() as cur:
             cur.callproc("search_branches_by_name", (name,))
-        self.connection.commit()
+            return cur.fetchall()
 
     def search_tos_by_type(self, type_):
         with self.connection.cursor() as cur:
             cur.callproc("search_tos_by_type", (type_,))
-        self.connection.commit()
+            return cur.fetchall()
 
     def search_services_by_date(self, date):
         with self.connection.cursor() as cur:
             cur.callproc("search_services_by_date", (date,))
-        self.connection.commit()
+            return cur.fetchall()
 
     def delete_clients_by_name(self, name):
         with self.connection.cursor() as cur:
@@ -235,6 +235,6 @@ class DatabasePy(object):
         self.connection.commit()
         
         
-    def read_table(self, name_file)
+    def read_table(self, name_file):
         df = read_excel(name_file)
         return df.values.tolist()
