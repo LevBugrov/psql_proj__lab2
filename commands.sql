@@ -36,7 +36,6 @@ branch_id INTEGER,
 tos_id INTEGER,
 client_id INTEGER,
 date_of_receipt text,
-
 FOREIGN KEY(branch_id)
     REFERENCES branches (id_branches)
 	ON DELETE CASCADE,
@@ -227,3 +226,18 @@ CREATE OR REPLACE FUNCTION delete_services_by_str (id_b integer, id_t integer, i
     AS $$
     delete from services where branch_id = id_b AND tos_id = id_t AND client_id = id_c;
 $$ LANGUAGE sql;
+
+CREATE OR REPLACE FUNCTION update_total_money ()
+RETURNS trigger AS $$
+BEGIN
+    UPDATE clients
+    SET total_money = (SELECT SUM(type_of_services.price)
+                       FROM services, type_of_services
+                       WHERE services.tos_id = type_of_services.id_tos
+                       AND clients.id_client = services.client_id);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER count_total_money AFTER INSERT ON services
+FOR EACH ROW EXECUTE PROCEDURE update_total_money();
