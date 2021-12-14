@@ -44,6 +44,193 @@ class MainWindow(Q.QMainWindow):
         # Remove tos by type
         self.ui.tos.remove_record.clicked.connect(self.delete_tos_by_type)
         # Remove services by date
+        self.ui.services.remove_record.clicked.connect(self.delete_services_by_date)
+        # Search customer by first name
+        self.ui.customers.search_record.clicked.connect(self.search_by_first_name)
+        # Search by branch name
+        self.ui.branches.search_record.clicked.connect(self.search_branches_by_name)
+        # Search tos by type
+        self.ui.tos.search_record.clicked.connect(self.search_tos_by_type)
+        # Search services by date
+        self.ui.services.search_record.clicked.connect(self.search_services_by_date)
+        # Update customers record
+        self.ui.customers.update_record.clicked.connect(lambda: self.update_record(self.db.update_clients,
+                                                                                   self.get_customers_record()))
+        # Update branches record
+        self.ui.branches.update_record.clicked.connect(lambda: self.update_record(self.db.update_branches,
+                                                                                   self.get_branches_record()))
+        # Update tos record
+        self.ui.tos.update_record.clicked.connect(lambda: self.update_record(self.db.update_tos,
+                                                                             self.get_tos_record()))
+        # Update services record
+        self.ui.services.update_record.clicked.connect(lambda: self.update_record(self.db.update_services,
+                                                                                  self.get_service_record()))
+        # Delete customer record
+        self.ui.customers.delete_record.clicked.connect(lambda: self.delete_record(self.db.delete_clients_by_str,
+                                                                                   [self.ui.customers.id.edit.text()]))
+        # Delete branch record
+        self.ui.branches.delete_record.clicked.connect(lambda: self.delete_record(self.db.delete_branches_by_str,
+                                                                                   [self.ui.branches.id.edit.text()]))
+        # Delete tos record
+        self.ui.tos.delete_record.clicked.connect(lambda: self.delete_record(self.db.delete_tos_by_str,
+                                                                                   [self.ui.tos.id.edit.text()]))
+        # Delete service record
+        self.ui.services.delete_record.clicked.connect(lambda: self.delete_record(self.db.delete_services_by_str,
+                                                                                   [self.ui.services.branch.edit.text(),
+                                                                                    self.ui.services.type.edit.text(),
+                                                                                    self.ui.services.customer.edit.text()]))
+
+    def delete_record(self, delete_func, record):
+        if "" in record:
+            self.missing_value_message("Id")
+            return
+        delete_func(*record)
+        self.refresh_all_tables()
+
+    def get_service_record(self):
+        branch_id = self.ui.services.branch.edit.text()
+        type_id = self.ui.services.type.edit.text()
+        customer_id = self.ui.services.customer.edit.text()
+        date = self.ui.services.date.edit.text()
+        if not branch_id:
+            self.missing_value_message("Branch id")
+            return
+        if not type_id:
+            self.missing_value_message("Type id")
+            return
+        if not type:
+            self.missing_value_message("Customer id")
+            return
+        if not date:
+            self.missing_value_message("Date")
+            return
+        return [branch_id, type_id, customer_id, date]
+
+    def get_tos_record(self):
+        id = self.ui.tos.id.edit.text()
+        name = self.ui.tos.name.edit.text()
+        type = self.ui.tos.type.edit.text()
+        cost = self.ui.tos.cost.edit.text()
+        if not id:
+            self.missing_value_message("Id")
+            return
+        if not name:
+            self.missing_value_message("Name")
+            return
+        if not type:
+            self.missing_value_message("Type")
+            return
+        if not cost:
+            self.missing_value_message("Phone Cost")
+            return
+        return [id, name, type, cost]
+
+    def get_branches_record(self):
+        id = self.ui.branches.id.edit.text()
+        name = self.ui.branches.name.edit.text()
+        address = self.ui.branches.address.edit.text()
+        phone_number = self.ui.branches.phone_number.edit.text()
+        if not id:
+            self.missing_value_message("Id")
+            return
+        if not name:
+            self.missing_value_message("Name")
+            return
+        if not address:
+            self.missing_value_message("Address")
+            return
+        if not phone_number:
+            self.missing_value_message("Phone number")
+            return
+        return [id, name, address, phone_number]
+
+    def get_customers_record(self):
+        id = self.ui.customers.id.edit.text()
+        last_name = self.ui.customers.last_name.edit.text()
+        first_name = self.ui.customers.first_name.edit.text()
+        phone_number = self.ui.customers.phone_number.edit.text()
+        if not id:
+            self.missing_value_message("Id")
+            return
+        if not last_name:
+            self.missing_value_message("Last name")
+            return
+        if not first_name:
+            self.missing_value_message("First name")
+            return
+        if not phone_number:
+            self.missing_value_message("Phone number")
+            return
+        return [id, last_name, first_name, phone_number]
+
+
+    def update_record(self, update_func, record):
+        update_func(*record)
+        self.refresh_all_tables()
+
+    def search_branches_by_name(self):
+        name = self.ui.branches.name.edit.text()
+        if not name:
+            self.missing_value_message("Name")
+            return
+        if self.db_name:
+            records = self.db.search_branches_by_name(name)
+            table = self.ui.branches.table
+            table.setRowCount(len(records))
+            for i in range(len(records)):
+                for j in range(len(records[i])):
+                    if records[i][j]:
+                        table.setItem(i, j, Q.QTableWidgetItem(str(records[i][j])))
+        else:
+            self.no_db_name_message()
+
+    def search_tos_by_type(self):
+        type = self.ui.tos.type.edit.text()
+        if not type:
+            self.missing_value_message("Type")
+            return
+        if self.db_name:
+            records = self.db.search_tos_by_type(type)
+            table = self.ui.tos.table
+            table.setRowCount(len(records))
+            for i in range(len(records)):
+                for j in range(len(records[i])):
+                    if records[i][j]:
+                        table.setItem(i, j, Q.QTableWidgetItem(str(records[i][j])))
+        else:
+            self.no_db_name_message()
+
+    def search_services_by_date(self):
+        date = self.ui.services.date.edit.text()
+        if not date:
+            self.missing_value_message("Date")
+            return
+        if self.db_name:
+            records = self.db.search_services_by_date(date)
+            table = self.ui.services.table
+            table.setRowCount(len(records))
+            for i in range(len(records)):
+                for j in range(len(records[i])):
+                    if records[i][j]:
+                        table.setItem(i, j, Q.QTableWidgetItem(str(records[i][j])))
+        else:
+            self.no_db_name_message()
+
+    def search_by_first_name(self):
+        first_name = self.ui.customers.first_name.edit.text()
+        if not first_name:
+            self.missing_value_message("First name")
+            return
+        if self.db_name:
+            records = self.db.search_clients_by_name(first_name)
+            table = self.ui.customers.table
+            table.setRowCount(len(records))
+            for i in range(len(records)):
+                for j in range(len(records[i])):
+                    if records[i][j]:
+                        table.setItem(i, j, Q.QTableWidgetItem(str(records[i][j])))
+        else:
+            self.no_db_name_message()
         self.ui.services.remove_record.clicked.connect(
             self.delete_services_by_date)
 
@@ -190,11 +377,6 @@ class MainWindow(Q.QMainWindow):
             phone_number = self.ui.customers.phone_number.edit.text()
             if not phone_number:
                 self.missing_value_message("Phone number")
-                return
-            # Check total sum
-            total_sum = self.ui.customers.total_sum.edit.text()
-            if not total_sum:
-                self.missing_value_message("Total sum")
                 return
             self.db.add_to_clients(id, first_name, last_name, phone_number)
             self.refresh_customers_table()
