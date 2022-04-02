@@ -1,5 +1,6 @@
 from PyQt5 import Qt as Q
 
+
 class LineEdit(Q.QWidget):
     def __init__(self, text):
         super().__init__()
@@ -181,7 +182,7 @@ class Ui(Q.QMainWindow):
     def setupUi(self, MainWindow):
         super().__init__()
         MainWindow.resize(1200, 800)
-        MainWindow.setWindowTitle("Databases")
+        MainWindow.setWindowTitle("Company")
         MainWindow.setWindowIcon(Q.QIcon("database-icon.jpeg"))
         self.central_widget = Q.QWidget()
         MainWindow.setCentralWidget(self.central_widget)

@@ -239,5 +239,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER count_total_money AFTER INSERT ON services
+
+DROP TRIGGER IF EXISTS count_total_money
+  ON services;
+CREATE TRIGGER count_total_money AFTER INSERT ON services
 FOR EACH ROW EXECUTE PROCEDURE update_total_money();
